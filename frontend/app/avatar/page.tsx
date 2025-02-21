@@ -3,6 +3,8 @@
 import { useRef, useState, useEffect } from "react"
 import dynamic from "next/dynamic"
 import StarsBackground from "../components/stars-background" // added import
+import { useFrame } from "@react-three/fiber"
+import { Sphere } from "three"
 
 // Dynamically import AvatarCanvas to disable SSR
 const AvatarCanvas = dynamic(() => import("./AvatarCanvas"), { ssr: false })
@@ -18,9 +20,10 @@ function PulsatingSun({ amplitude }: { amplitude: number }) {
     }
   })
   return (
-    <Sphere ref={meshRef} args={[1, 64, 64]}>
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[1, 64, 64]} />
       <meshStandardMaterial emissive="gold" emissiveIntensity={1} color="orange" />
-    </Sphere>
+    </mesh>
   )
 }
 
