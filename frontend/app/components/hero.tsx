@@ -36,7 +36,10 @@ export default function Hero() {
     {
       command: "talk",
       description: "Open microphone to talk to AI version of BP Rimal",
-      action: () => "Activating microphone interface..."
+      action: () => {
+        router.push("/avatar")
+        return "Navigating to avatar page..."
+      }
     },
     {
       command: "help",
