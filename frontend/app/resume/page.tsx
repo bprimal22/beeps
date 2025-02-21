@@ -51,13 +51,26 @@ export default function ResumePage() {
                 title: "GenUX.site",
                 link: "https://www.genux.site",
                 description: "Generative User Interface framework enabling LLM agents to generate UI components in real time.",
-                tech: ["Python", "TypeScript", "React"]
+                tech: ["Python", "TypeScript", "Svelte"]
               },
               {
                 title: "decall.live",
-                link: "https://www.decall.live",
+                link: "http://decall.live",
                 description: "Low-latency AI Phone Receptionist for Auto Dealerships",
                 tech: ["Python", "TypeScript", "Kubernetes"]
+              },
+              {
+                title: "Drug-Drug Interaction Classification",
+                link: "https://github.com/bprimal22/Drug-Drug-Interaction-Classification",
+                description: "Innovated upon the state-of-the-art model in predicting interaction between drugs. Won the best UT Austin Data Science Project award.",
+                tech: ["Python", "PyTorch"],
+                weightsLink: "https://huggingface.co/bprimal/Drug-Drug-Interaction-Classification"
+              },
+              {
+                title: "Video-Video Translation with Lip Sync",
+                link: "https://medium.com/@contactbp22/video-video-translation-with-lip-sync-e83f627a1f8",
+                description: "Translated video content from one language to another with voice cloning and lip sync.",
+                tech: ["Python", "PyTorch", "Transformers", "Wav2Lip"]
               }
             ].map((project, idx) => (
               <div key={idx} className="bg-black/50 border border-gray-800 rounded-lg p-6 hover:bg-white/10 transition-all">
@@ -67,6 +80,14 @@ export default function ResumePage() {
                   </a>
                 </h3>
                 <p className="text-gray-400 mt-2">{project.description}</p>
+                {project.weightsLink && (
+                  <p className="mt-2">
+                    <a href={project.weightsLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-400 hover:underline">
+                      <img src="https://huggingface.co/front/assets/huggingface_logo.svg" alt="Hugging Face" className="w-5 h-5 mr-1" />
+                      Model Weights
+                    </a>
+                  </p>
+                )}
                 <div className="flex gap-2 mt-3">
                   {project.tech.map(tech => (
                     <span key={tech} className="px-2 py-1 bg-white/10 rounded text-xs">{tech}</span>
@@ -74,6 +95,39 @@ export default function ResumePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="space-y-6 mb-10">
+          <h2 className="text-2xl font-semibold mb-6">Research</h2>
+          <div className="bg-black/50 border border-gray-800 rounded-lg p-6 hover:bg-white/10 transition-all">
+            <h3 className="text-xl font-medium">
+              <a
+                href="https://utinclab.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:underline"
+              >
+                Integrated Nano Computing Lab
+              </a>
+            </h3>
+            <p className="text-gray-400">Research Assistant • 2019 - 2021</p>
+            <ul className="list-disc ml-5 text-gray-300 mt-4 space-y-2">
+              <li>
+                Researched neuromorphic computing architectures and Spiking Neural Networks on chip.
+              </li>
+              <li>
+                Publication:{" "}
+                <a
+                  href="https://pubs.aip.org/aip/apl/article/118/11/112401/1022438/Domain-wall-magnetic-tunnel-junction-spin-orbit"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline"
+                >
+                  Domain-wall magnetic tunnel junction spin-orbit torque oscillator
+                </a>
+              </li>
+            </ul>
           </div>
         </section>
 
@@ -85,18 +139,17 @@ export default function ResumePage() {
               company: "Visa",
               period: "June 2023 - Present",
               points: [
-                "Developed an internal AI application for incident resolution, reducing investigation time from 4 hours to 20 minutes",
-                "Developed and maintained B2B payment platform APIs processing over $1.5B annually",
-                "Maintained 99.99% system uptime through production issue resolution"
-              ]
+                "Developed an AI tool that utilizes historical production issues to recommend solutions for new ones, cutting initial investigation time from 4 hours to just 20 minutes",
+                "Developed and maintained B2B payment platform APIs processing over $1.5B annually"              ]
             },
             {
-              title: "iOS/Silicon Engineering Intern",
+              title: "Silicon Engineering Intern",
               company: "Apple",
               period: "May 2022 - August 2022",
               points: [
-                "Developed Slack app for iOS/MacOS/WatchOS regression testing",
-                "Implemented data caching with 10x speedup in detection time"
+                "Developed an agent to request, run, and cancel regression tests for iOS/MacOS/WatchOS software changes through slack",
+                "Implemented data caching to detect error-prone host machines and reduce burdens on the test scheduler API",
+                "Optimized data caching with multithreading which led to a 10x speedup in detection time"
               ]
             },
             {
@@ -104,8 +157,8 @@ export default function ResumePage() {
               company: "AMD",
               period: "January 2021 - August 2021",
               points: [
-                "Developed tools for server processors and GPUs testing",
-                "Validated GPU power consumption, saving over $5M annually"
+                "Implemented system level test automation of server processors and GPUs.",
+                "Validated power consumption of GPU cores, saving over $5M annually"
               ]
             }
           ].map((job, idx) => (
@@ -140,7 +193,6 @@ export default function ResumePage() {
             <h3 className="text-xl font-medium">B.S. Electrical and Computer Engineering Honors</h3>
             <p className="text-gray-400">University of Texas at Austin • 2019 - 2023</p>
             <p className="text-gray-300 mt-2">GPA: 3.87</p>
-            <p className="text-gray-300">Published research in neuromorphic computing and Spiking Neural Networks on chip</p>
           </div>
         </section>
       </div>
