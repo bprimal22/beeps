@@ -46,6 +46,13 @@ export default function Hero() {
       ).join("\n")
     },
     {
+      command: "ls", // added ls command
+      description: "List available commands",
+      action: () => commands.map((cmd) => 
+        `<span class="text-green-400 font-bold">${cmd.command}</span>`
+      ).join(" ")
+    },
+    {
       command: "clear",
       description: "Clear the terminal",
       action: () => ""
