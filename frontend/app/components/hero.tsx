@@ -42,7 +42,7 @@ export default function Hero() {
       command: "help",
       description: "List available commands",
       action: () => commands.map((cmd) => 
-        `<span class="text-green-400 font-bold">${cmd.command}</span>\n    ${cmd.description}`
+        `<span class="text-green-400 font-bold">${cmd.command}</span>: ${cmd.description}`
       ).join("\n")
     },
     {
