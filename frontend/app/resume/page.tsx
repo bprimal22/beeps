@@ -1,12 +1,25 @@
 import StarsBackground from '../components/stars-background'
 
 export default function ResumePage() {
+  // Added helper function for company links
+  const companyLinks: Record<string, string> = {
+    "Visa": "https://www.visa.com",
+    "Apple": "https://www.apple.com",
+    "AMD": "https://www.amd.com"
+  }
+  function getCompanyLink(company: string) {
+    return companyLinks[company] || "#"
+  }
+
   return (
     <div className="relative min-h-screen bg-black text-white">
       <StarsBackground />
       <div className="relative z-10 p-8 max-w-4xl mx-auto">
 <header className="mb-12 bg-black/50 p-8 rounded-lg border border-gray-800">
-  <h1 className="text-5xl font-bold mb-4">BP Rimal</h1>
+  <div className="flex items-center mb-4">
+    <img src="/bp.png" alt="BP Rimal" className="w-24 h-24 rounded-full mr-4" />
+    <h1 className="text-5xl font-bold">BP Rimal</h1>
+  </div>
   <div className="text-gray-400 space-y-2">
     <div className="flex items-center gap-4">
       <a href="https://x.com/_bprimal_" target="_blank" rel="noopener noreferrer" 
@@ -140,7 +153,8 @@ export default function ResumePage() {
               period: "June 2023 - Present",
               points: [
                 "Developed an AI tool that utilizes historical production issues to recommend solutions for new ones, cutting initial investigation time from 4 hours to just 20 minutes",
-                "Developed and maintained B2B payment platform APIs processing over $1.5B annually"              ]
+                "Developed and maintained B2B payment platform APIs processing over $1.5B annually"              
+              ]
             },
             {
               title: "Silicon Engineering Intern",
@@ -164,7 +178,16 @@ export default function ResumePage() {
           ].map((job, idx) => (
             <div key={idx} className="bg-black/50 border border-gray-800 rounded-lg p-6 hover:bg-white/10 transition-all">
               <h3 className="text-xl font-medium">{job.title}</h3>
-              <p className="text-gray-400">{job.company} • {job.period}</p>
+              <p className="text-gray-400">
+                <a 
+                  href={getCompanyLink(job.company)} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:underline"
+                >
+                  {job.company}
+                </a> • {job.period}
+              </p>
               <ul className="list-disc ml-5 mt-2 text-gray-300">
                 {job.points.map((point, i) => (
                   <li key={i}>{point}</li>
@@ -189,10 +212,17 @@ export default function ResumePage() {
 
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-6">Education</h2>
-          <div className="bg-black/50 border border-gray-800 rounded-lg p-6 hover:bg-white/10 transition-all">
-            <h3 className="text-xl font-medium">B.S. Electrical and Computer Engineering Honors</h3>
-            <p className="text-gray-400">University of Texas at Austin • 2019 - 2023</p>
-            <p className="text-gray-300 mt-2">GPA: 3.87</p>
+          <div className="space-y-6">
+            <div className="bg-black/50 border border-gray-800 rounded-lg p-6 hover:bg-white/10 transition-all">
+              <h3 className="text-xl font-medium">M.S. Artificial Intelligence</h3>
+              <p className="text-gray-400">University of Texas at Austin • 2024 - Present</p>
+              <p className="text-gray-300 mt-2">GPA: 4.0</p>
+            </div>
+            <div className="bg-black/50 border border-gray-800 rounded-lg p-6 hover:bg-white/10 transition-all">
+              <h3 className="text-xl font-medium">B.S. Electrical and Computer Engineering Honors</h3>
+              <p className="text-gray-400">University of Texas at Austin • 2019 - 2023</p>
+              <p className="text-gray-300 mt-2">GPA: 3.87</p>
+            </div>
           </div>
         </section>
       </div>
