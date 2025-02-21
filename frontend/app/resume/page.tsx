@@ -1,4 +1,5 @@
 import StarsBackground from '../components/stars-background'
+import Link from 'next/link' // added import
 
 export default function ResumePage() {
   // Added helper function for company links
@@ -221,6 +222,15 @@ export default function ResumePage() {
             </div>
           </div>
         </section>
+        {/* Back button */}
+        <div className="mt-8">
+          <Link href="/" className="inline-flex items-center space-x-2 px-4 py-2 bg-black/50 border border-gray-800 rounded-lg hover:bg-white/10 transition-all">
+            <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+              <path d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 111.414 1.414L7.414 9H17a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z"/>
+            </svg>
+            <span>cd ..</span>
+          </Link>
+        </div>
       </div>
     </div>
   )
