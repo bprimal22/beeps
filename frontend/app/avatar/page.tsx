@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react"
 import dynamic from "next/dynamic"
+import StarsBackground from "../components/stars-background" // added import
 
 // Dynamically import AvatarCanvas to disable SSR
 const AvatarCanvas = dynamic(() => import("./AvatarCanvas"), { ssr: false })
@@ -66,7 +67,8 @@ export default function AvatarPage() {
   return !mounted ? (
     <div />
   ) : (
-    <div className="h-screen w-full bg-black">
+    <div className="h-screen w-full bg-black relative">
+      <StarsBackground /> {/* added star background */}
       <AvatarCanvas amplitude={amplitude} />
       <div className="absolute top-0 inset-x-0 text-center mt-8 text-white font-bold text-2xl">
         let's talk...
