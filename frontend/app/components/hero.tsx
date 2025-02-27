@@ -29,7 +29,7 @@ export default function Hero() {
       command: "resume",
       description: "Navigate to resume page",
       action: () => {
-        router.push("/resume")
+        router.push("/resume")  
         return "Navigating to resume page..."
       }
     },
