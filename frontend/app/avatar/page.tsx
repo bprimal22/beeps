@@ -1,17 +1,16 @@
-"use client"
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import dynamic from 'next/dynamic';
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import * as THREE from "three";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import StarsBackground from "../components/stars-background";
+import { useConversation } from "@11labs/react";
 
 function CosmicVisualization({ amplitude = 0 }) {
   const particlesRef = useRef<THREE.Points>(null);
   const wavesRef = useRef<THREE.Mesh>(null);
 
-  // Initialize particle system
   const particleCount = 4000;
   const positions = new Float32Array(particleCount * 3);
   const colors = new Float32Array(particleCount * 3);
@@ -19,15 +18,15 @@ function CosmicVisualization({ amplitude = 0 }) {
   for (let i = 0; i < particleCount; i++) {
     const radius = 300 + Math.random() * 200;
     const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos((Math.random() * 2) - 1);
-    
+    const phi = Math.acos(Math.random() * 2 - 1);
+
     positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
     positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
     positions[i * 3 + 2] = radius * Math.cos(phi);
-    
+
     const color = new THREE.Color();
     color.setHSL(0.6 + Math.random() * 0.2, 0.5 + Math.random() * 0.5, 0.4 + Math.random() * 0.4);
-    
+
     colors[i * 3] = color.r;
     colors[i * 3 + 1] = color.g;
     colors[i * 3 + 2] = color.b;
@@ -35,51 +34,33 @@ function CosmicVisualization({ amplitude = 0 }) {
 
   useFrame((state, delta) => {
     if (particlesRef.current && wavesRef.current) {
-      // Animate particles with increased sensitivity
       particlesRef.current.rotation.y += delta * 0.1 * (1 + amplitude * 2);
-      const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
+      const positions = particlesRef.current.geometry.attributes.position.array;
       const time = state.clock.elapsedTime;
-      
-      // Base radius that will be affected by audio
-      const baseRadius = 300 + amplitude * 500; // Increased amplitude effect
-      
+
+      const baseRadius = 300 + amplitude * 500;
       for (let i = 0; i < positions.length; i += 3) {
         const originalX = positions[i];
         const originalY = positions[i + 1];
         const originalZ = positions[i + 2];
-        
-        const distance = Math.sqrt(
-          originalX ** 2 + 
-          originalY ** 2 + 
-          originalZ ** 2
-        );
-        
-        // More dramatic pulsing effect
+        const distance = Math.sqrt(originalX ** 2 + originalY ** 2 + originalZ ** 2);
         const pulseFactor = 1 + amplitude * Math.sin(time * 2 + distance * 0.01) * 1.5;
-        // Scale factor that affects the overall size
         const scaleFactor = (baseRadius / 300) * pulseFactor;
-        
+
         positions[i] = originalX * scaleFactor;
         positions[i + 1] = originalY * scaleFactor;
         positions[i + 2] = originalZ * scaleFactor;
       }
       particlesRef.current.geometry.attributes.position.needsUpdate = true;
 
-      // More responsive wave animation
       wavesRef.current.rotation.x += delta * (0.5 + amplitude * 2);
       wavesRef.current.rotation.y += delta * (0.2 + amplitude * 1.5);
-      wavesRef.current.scale.setScalar(1 + amplitude * 1.5); // Increased scale response
-      
-      // Update colors based on amplitude
-      const colors = particlesRef.current.geometry.attributes.color.array as Float32Array;
+      wavesRef.current.scale.setScalar(1 + amplitude * 1.5);
+
+      const colors = particlesRef.current.geometry.attributes.color.array;
       for (let i = 0; i < colors.length; i += 3) {
         const color = new THREE.Color();
-        // Shift color hue based on amplitude
-        color.setHSL(
-          0.6 + amplitude * 0.2, // Base blue-purple shifting with amplitude
-          0.5 + amplitude * 0.5, // Increased saturation with amplitude
-          0.4 + amplitude * 0.6  // Increased brightness with amplitude
-        );
+        color.setHSL(0.6 + amplitude * 0.2, 0.5 + amplitude * 0.5, 0.4 + amplitude * 0.6);
         colors[i] = color.r;
         colors[i + 1] = color.g;
         colors[i + 2] = color.b;
@@ -106,18 +87,18 @@ function CosmicVisualization({ amplitude = 0 }) {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={4 + amplitude * 2} // Dynamic particle size
+          size={4 + amplitude * 2}
           transparent
           vertexColors
           blending={THREE.AdditiveBlending}
         />
       </points>
       <mesh ref={wavesRef}>
-        <torusGeometry args={[200, 3 + amplitude * 5, 16, 100]} /> {/* Dynamic torus thickness */}
+        <torusGeometry args={[200, 3 + amplitude * 5, 16, 100]} />
         <meshBasicMaterial
           color={0x00ffff}
           transparent
-          opacity={0.7 + amplitude * 0.3} // Dynamic opacity
+          opacity={0.7 + amplitude * 0.3}
           wireframe
         />
       </mesh>
@@ -128,15 +109,27 @@ function CosmicVisualization({ amplitude = 0 }) {
 export default function AvatarPage() {
   const [mounted, setMounted] = useState(false);
   const [amplitude, setAmplitude] = useState(0);
+  const [responseText, setResponseText] = useState("");
   const analyserRef = useRef<AnalyserNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
+
+  const conversation = useConversation({
+    onConnect: () => console.log("Connected"),
+    onDisconnect: () => console.log("Disconnected"),
+    onMessage: (message) => {
+      console.log("Message:", message);
+      // Adjust this based on the actual message structure
+      setResponseText(message.text || ""); // Assuming 'text' contains the agent's response
+    },
+    onError: (error) => console.error("Error:", error),
+  });
 
   useEffect(() => {
     setMounted(true);
     async function setupAudio() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const analyser = audioCtx.createAnalyser();
         analyser.fftSize = 256;
         const source = audioCtx.createMediaStreamSource(stream);
@@ -148,8 +141,9 @@ export default function AvatarPage() {
         const updateAmplitude = () => {
           if (analyserRef.current && dataArrayRef.current) {
             analyserRef.current.getByteFrequencyData(dataArrayRef.current);
-            // compute an average amplitude in range [0,1]
-            const avg = dataArrayRef.current.reduce((acc, val) => acc + val, 0) / dataArrayRef.current.length;
+            const avg =
+              dataArrayRef.current.reduce((acc, val) => acc + val, 0) /
+              dataArrayRef.current.length;
             setAmplitude(avg / 255);
           }
           requestAnimationFrame(updateAmplitude);
@@ -161,6 +155,23 @@ export default function AvatarPage() {
     }
     setupAudio();
   }, []);
+
+  const startConversation = useCallback(async () => {
+    try {
+      // Microphone permission is already requested in useEffect,
+      // but we include it here to ensure compatibility with the hook
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      await conversation.startSession({
+        agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || "YOUR_PUBLIC_AGENT_ID",
+      });
+    } catch (error) {
+      console.error("Failed to start conversation:", error);
+    }
+  }, [conversation]);
+
+  const stopConversation = useCallback(async () => {
+    await conversation.endSession();
+  }, [conversation]);
 
   return !mounted ? (
     <div />
@@ -177,6 +188,37 @@ export default function AvatarPage() {
       </div>
       <div className="absolute top-0 inset-x-0 text-center mt-8 text-white font-bold text-2xl z-10">
         talk to me ...
+      </div>
+      <div className="absolute bottom-0 inset-x-0 flex flex-col items-center mb-8 space-y-4 z-10">
+        <div className="flex space-x-4">
+          <button
+            onClick={startConversation}
+            disabled={conversation.status === "connected"}
+            className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg 
+            disabled:bg-gray-300 transition-all duration-300 transform hover:scale-105
+            font-semibold tracking-wide shadow-lg hover:shadow-blue-500/50"
+          >
+            {conversation.status === "connected" ? "Connected" : "Start Conversation"}
+          </button>
+          <button
+            onClick={stopConversation}
+            disabled={conversation.status !== "connected"}
+            className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg 
+            disabled:bg-gray-300 transition-all duration-300 transform hover:scale-105
+            font-semibold tracking-wide shadow-lg hover:shadow-red-500/50"
+          >
+            End Conversation
+          </button>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className={`h-3 w-3 rounded-full ${
+            conversation.status === "connected" ? "bg-green-500" : "bg-gray-500"
+          } animate-pulse`}></div>
+          <p className="text-white text-sm font-medium uppercase tracking-wider">
+            {conversation.status}
+          </p>
+        </div>
+        <p className="text-white/90 text-lg">{responseText}</p>
       </div>
     </div>
   );
