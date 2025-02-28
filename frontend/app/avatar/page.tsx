@@ -11,12 +11,14 @@ function CosmicVisualization({ amplitude = 0 }) {
   const particlesRef = useRef<THREE.Points>(null);
   const wavesRef = useRef<THREE.Mesh>(null);
 
-  const particleCount = 4000;
+  // Increase particle count from 4000 to 10000
+  const particleCount = 10000;
   const positions = new Float32Array(particleCount * 3);
   const colors = new Float32Array(particleCount * 3);
 
   for (let i = 0; i < particleCount; i++) {
-    const radius = 300 + Math.random() * 200;
+    // Adjust radius range for denser core
+    const radius = 250 + Math.random() * 300;
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(Math.random() * 2 - 1);
 
@@ -25,7 +27,12 @@ function CosmicVisualization({ amplitude = 0 }) {
     positions[i * 3 + 2] = radius * Math.cos(phi);
 
     const color = new THREE.Color();
-    color.setHSL(0.6 + Math.random() * 0.2, 0.5 + Math.random() * 0.5, 0.4 + Math.random() * 0.4);
+    // Add more color variation
+    color.setHSL(
+      0.5 + Math.random() * 0.3, // More color variation in hue
+      0.6 + Math.random() * 0.4, // Higher saturation
+      0.5 + Math.random() * 0.5  // Brighter luminosity
+    );
 
     colors[i * 3] = color.r;
     colors[i * 3 + 1] = color.g;
@@ -87,7 +94,7 @@ function CosmicVisualization({ amplitude = 0 }) {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={4 + amplitude * 2}
+          size={3 + amplitude * 2} // Reduced base size for better density
           transparent
           vertexColors
           blending={THREE.AdditiveBlending}
