@@ -190,9 +190,9 @@ export default function ResumePage() {
 
   // Replace the getItemTypeIcon function with this updated version
   const getItemTypeIcon = (type: string, organization?: string) => {
-    if (type === "experience" && organization && companyLogos[organization]) {
+    if ((type === "experience" || type === "education") && organization && companyLogos[organization]) {
       return (
-        <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center overflow-hidden p-1">
+        <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center overflow-hidden p-1.5">
           <img 
             src={companyLogos[organization]} 
             alt={`${organization} logo`}
@@ -233,7 +233,7 @@ export default function ResumePage() {
         return (
           <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center">
             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5z" />
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -264,7 +264,7 @@ export default function ResumePage() {
         }`}
       >
         <div className="flex items-start cursor-pointer" onClick={() => toggleExpand(item.id)}>
-          <div className="mr-3 mt-1">
+          <div className="mr-4 mt-1"> {/* Increased margin-right from mr-3 to mr-4 */}
             {getItemTypeIcon(item.type, item.organization)}
           </div>
           <div className="flex-grow">
