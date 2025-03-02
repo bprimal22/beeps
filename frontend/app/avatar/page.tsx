@@ -101,12 +101,14 @@ function CosmicVisualization({ amplitude = 0 }) {
         />
       </points>
       <mesh ref={wavesRef}>
-        <torusGeometry args={[200, 3 + amplitude * 5, 16, 100]} />
-        <meshBasicMaterial
+        <sphereGeometry args={[200, 64, 64]} />
+        <meshPhongMaterial
           color={0x00ffff}
           transparent
-          opacity={0.7 + amplitude * 0.3}
-          wireframe
+          opacity={0.3 + amplitude * 0.3}
+          shininess={100}
+          emissive={0x00ffff}
+          emissiveIntensity={0.5 + amplitude * 0.5}
         />
       </mesh>
     </group>
@@ -189,6 +191,7 @@ export default function AvatarPage() {
         <Canvas camera={{ position: [0, 0, 1000], fov: 75 }}>
           <ambientLight intensity={0.5} />
           <pointLight position={[10, 10, 10]} />
+          <pointLight position={[0, 0, 300]} intensity={1} color={0x00ffff} />
           <CosmicVisualization amplitude={amplitude} />
           <OrbitControls enableZoom={false} />
         </Canvas>
