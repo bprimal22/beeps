@@ -29,6 +29,14 @@ const companyLogos: Record<string, string> = {
   "Integrated Nano Computing Lab": "/logos/ut.png",
 }
 
+// Add this constant near other constant definitions
+const projectLogos: Record<string, string> = {
+  "GenUX.site": "/logos/genux.png",
+  "decall.live": "/logos/decall.png",
+  "Drug-Drug Interaction Classification": "/logos/ddi.png",
+  "Video-Video Translation with Lip Sync": "/logos/video.png",
+}
+
 export default function ResumePage() {
   // State to track expanded items
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({})
@@ -188,11 +196,12 @@ export default function ResumePage() {
   const experiences = timelineItems.filter((item) => item.type === "experience")
   const education = timelineItems.filter((item) => item.type === "education")
 
-  // Replace the getItemTypeIcon function with this updated version
-  const getItemTypeIcon = (type: string, organization?: string) => {
+  // Update the getItemTypeIcon function
+  const getItemTypeIcon = (type: string, organization?: string, title?: string) => {
+    // Handle company/education logos
     if ((type === "experience" || type === "education") && organization && companyLogos[organization]) {
       return (
-        <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center overflow-hidden p-1.5">
+        <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center overflow-hidden p-2">
           <img 
             src={companyLogos[organization]} 
             alt={`${organization} logo`}
@@ -202,11 +211,25 @@ export default function ResumePage() {
       )
     }
   
+    // Handle project logos
+    if (type === "project" && title && projectLogos[title]) {
+      return (
+        <div className="w-16 h-16 rounded-full bg-black flex items-center justify-center overflow-hidden p-2">
+          <img 
+            src={projectLogos[title]} 
+            alt={`${title} logo`}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      )
+    }
+    
+    // Fallback to default icons
     switch (type) {
       case "project":
         return (
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -218,8 +241,8 @@ export default function ResumePage() {
         )
       case "experience":
         return (
-          <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -231,8 +254,8 @@ export default function ResumePage() {
         )
       case "education":
         return (
-          <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 rounded-full bg-yellow-500 flex items-center justify-center">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5z" />
               <path
                 strokeLinecap="round"
@@ -264,8 +287,8 @@ export default function ResumePage() {
         }`}
       >
         <div className="flex items-start cursor-pointer" onClick={() => toggleExpand(item.id)}>
-          <div className="mr-4 mt-1"> {/* Increased margin-right from mr-3 to mr-4 */}
-            {getItemTypeIcon(item.type, item.organization)}
+          <div className="mr-6 mt-1"> {/* Increased from mr-4 to mr-6 */}
+            {getItemTypeIcon(item.type, item.organization, item.title)}
           </div>
           <div className="flex-grow">
             <div className="flex justify-between items-start">
