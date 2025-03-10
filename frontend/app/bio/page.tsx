@@ -186,8 +186,9 @@ export default function ResumePage() {
       description: "Researched neuromorphic computing architectures",
       details: [
         "Researched neuromorphic computing architectures and Spiking Neural Networks on chip.",
-        "Publication: Domain-wall magnetic tunnel junction spin-orbit torque oscillator",
+        "Publication: <a href='https://pubs.aip.org/aip/apl/article/118/11/112401/1022438/Domain-wall-magnetic-tunnel-junction-spin-orbit' target='_blank' rel='noopener noreferrer' class='text-blue-400 hover:underline'>Domain-wall magnetic tunnel junction spin-orbit torque oscillator</a>",
       ],
+      link: "https://pubs.aip.org/aip/apl/article/118/11/112401/1022438/Domain-wall-magnetic-tunnel-junction-spin-orbit"
     },
   ]
 
@@ -341,7 +342,7 @@ export default function ResumePage() {
             {item.details && item.details.length > 0 && (
               <ul className="list-disc ml-5 text-gray-300 space-y-2">
                 {item.details.map((detail, i) => (
-                  <li key={i}>{detail}</li>
+                  <li key={i} dangerouslySetInnerHTML={{ __html: detail }}></li>
                 ))}
               </ul>
             )}
