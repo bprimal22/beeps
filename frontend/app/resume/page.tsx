@@ -300,7 +300,7 @@ export default function ResumePage() {
           ))}
         </section>
 
-        <section className="mb-10">
+        <section className="mb-10 mt-10">
           <h2 className="text-2xl font-semibold mb-6">Education</h2>
           <div className="space-y-6">
             {[
