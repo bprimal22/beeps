@@ -91,7 +91,7 @@ export default function ResumePage() {
               {
                 title: "GenUX.site",
                 link: "https://www.genux.site",
-                description: "Generative User Interface framework enabling LLM agents to generate UI components in real time.",
+                description: "Enabled LLM Agents to generate UI in real time to interact with users.",
                 tech: ["Python", "TypeScript", "Svelte"]
               },
               {

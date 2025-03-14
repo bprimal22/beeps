@@ -19,15 +19,15 @@ export default function Hero() {
   const commands: Command[] = [
     {
       command: "talk",
-      description: "Open microphone to talk to AI version of BP Rimal",
+      description: "talk to BP!",
       action: () => {
         router.push("/avatar")
-        return "Navigating to avatar page..."
+        return "Waking BP up..."
       }
     },
     {
       command: "resume",
-      description: "Navigate to resume page",
+      description: "see BP's resume",
       action: () => {
         router.push("/resume")  
         return "Navigating to resume page..."
@@ -35,7 +35,7 @@ export default function Hero() {
     },
     {
       command: "writings",
-      description: "Navigate to writings page",
+      description: "check out BP's writings",
       action: () => {
         router.push("/writings")
         return "Navigating to writings page..."
