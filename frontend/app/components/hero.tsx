@@ -9,6 +9,7 @@ type Command = {
   command: string
   description: string
   action: () => string
+  showInHelp?: boolean  // New property to control visibility in help commands
 }
 
 const WELCOME_MESSAGE = "Type 'help' for available commands."
@@ -19,11 +20,12 @@ export default function Hero() {
   const commands: Command[] = [
     {
       command: "talk",
-      description: "talk to BP!",
+      description: "talk to AI BP!",
       action: () => {
         router.push("/avatar")
-        return "Waking BP up..."
-      }
+        return "Waking AI BP up..."
+      },
+      showInHelp: true
     },
     {
       command: "resume",
@@ -31,7 +33,8 @@ export default function Hero() {
       action: () => {
         router.push("/resume")  
         return "Navigating to resume page..."
-      }
+      },
+      showInHelp: true
     },
     {
       command: "writings",
@@ -39,21 +42,26 @@ export default function Hero() {
       action: () => {
         router.push("/writings")
         return "Navigating to writings page..."
-      }
+      },
+      showInHelp: true
     },
     {
       command: "help",
       description: "List available commands",
-      action: () => commands.map((cmd) => 
-        `<span class="text-green-400 font-bold">${cmd.command}</span>: ${cmd.description}`
-      ).join("\n")
+      action: () => commands
+        .filter(cmd => cmd.showInHelp)
+        .map((cmd) => 
+          `<span class="text-green-400 font-bold">${cmd.command}</span>: ${cmd.description}`
+        ).join("\n")
     },
     {
-      command: "ls", // added ls command
+      command: "ls", 
       description: "List available commands",
-      action: () => commands.map((cmd) => 
-        `<span class="text-green-400 font-bold">${cmd.command}</span>`
-      ).join(" ")
+      action: () => commands
+        .filter(cmd => cmd.showInHelp)
+        .map((cmd) => 
+          `<span class="text-green-400 font-bold">${cmd.command}</span>`
+        ).join(" ")
     },
     {
       command: "clear",
@@ -64,8 +72,13 @@ export default function Hero() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [input, setInput] = useState("")
+  
+  // Initialize output with welcome message and help command result
+  const helpCommandOutput = commands.find(cmd => cmd.command === "help")?.action() || ""
   const [output, setOutput] = useState<string[]>([
     "Welcome to BP Rimal's terminal. Type 'help' for available commands.",
+    "> help",
+    helpCommandOutput
   ])
 
   useEffect(() => {
