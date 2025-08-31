@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import StarsBackground from "../components/stars-background";
-import { useConversation } from "@11labs/react";
+import { useConversation } from "@elevenlabs/react";
 
 function CosmicVisualization({ amplitude = 0 }) {
   const particlesRef = useRef<THREE.Points>(null);
@@ -182,6 +182,7 @@ export default function AvatarPage() {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       await conversation.startSession({
         agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || "YOUR_PUBLIC_AGENT_ID",
+        connectionType: "webrtc",
       });
     } catch (error) {
       console.error("Failed to start conversation:", error);
