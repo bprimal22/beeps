@@ -313,7 +313,7 @@ export default function AvatarPage() {
       <div className="absolute top-0 inset-x-0 text-center mt-8 text-white font-bold text-2xl z-10">
         talk to me ...
       </div>
-      <div className="absolute bottom-0 inset-x-0 flex flex-col items-center mb-10 space-y-3 z-10">
+      <div className="absolute bottom-0 inset-x-0 flex flex-col items-center space-y-3 z-10 mb-24 sm:mb-16 md:mb-10">
         <button
           aria-label={
             isConnecting ? "Connecting" : conversation.status === "connected" ? "End Call" : "Start Call"
