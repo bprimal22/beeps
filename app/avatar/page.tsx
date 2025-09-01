@@ -17,7 +17,11 @@ function CosmicVisualization({ amplitude = 0, mobile = false }) {
 
   // Device memory hint (stable across component lifetime)
   const deviceMem = useMemo(() => {
-    return (typeof navigator !== "undefined" && (navigator as any).deviceMemory) || 4;
+    if (typeof navigator !== "undefined" && "deviceMemory" in navigator) {
+      const dm = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
+      if (typeof dm === "number" && dm > 0) return dm;
+    }
+    return 4;
   }, []);
 
   // Allocate once to a max size based on device memory; never changes length
