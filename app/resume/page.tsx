@@ -63,7 +63,7 @@ export default function ResumePage() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
               </svg>
-              <span>contactbp22@gmail.com</span>
+              <span>email</span>
             </a>
             <a href="https://linkedin.com/in/bprimal" target="_blank" rel="noopener noreferrer"
               className="hover:text-blue-400 transition-colors flex items-center gap-2">
@@ -78,6 +78,13 @@ export default function ResumePage() {
                 <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"/>
               </svg>
               <span>bprimal22</span>
+            </a>
+            <a href="https://scholar.google.com/citations?hl=en&user=ijuSEnIAAAAJ" target="_blank" rel="noopener noreferrer"
+              className="hover:text-blue-400 transition-colors flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3 1 9l11 6 9-4.91V17h2V9L12 3Zm-7.74 7L12 13.97 19.74 10 12 6.03 4.26 10ZM6 14.9V18c0 1.58 2.69 3 6 3s6-1.42 6-3v-3.1l-6 3.27-6-3.27Z"/>
+              </svg>
+              <span>Google Scholar</span>
             </a>
           </div>
         </header>
@@ -137,6 +144,51 @@ export default function ResumePage() {
           </div>
         </section>
 
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-6">Publications</h2>
+          <div className="space-y-4">
+            {[
+              {
+                title: "Domain wall-magnetic tunnel junction spin-orbit torque devices and circuits for in-memory computing",
+                link: "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ijuSEnIAAAAJ&citation_for_view=ijuSEnIAAAAJ:u5HHmVD_uO8C",
+                venue: "Applied Physics Letters",
+                year: "2021",
+              },
+              {
+                title: "Spin orbit torque domain wall-magnetic tunnel junction devices and circuits for in-memory and neuromorphic computing",
+                link: "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ijuSEnIAAAAJ&citation_for_view=ijuSEnIAAAAJ:u-x6o8ySG0sC",
+                venue: "APS March Meeting Abstracts",
+                year: "2021",
+              },
+              {
+                title: "WIP: AI-Driven Personalized Learning for an Introductory Computing Course",
+                link: "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ijuSEnIAAAAJ&citation_for_view=ijuSEnIAAAAJ:9yKSN-GCB0IC",
+                venue: "2025 ASEE Annual Conference & Exposition",
+                year: "2025",
+              },
+            ].map((publication, idx) => (
+              <div
+                key={idx}
+                className="bg-black/50 border border-gray-800 rounded-lg p-6 hover:bg-white/10 transition-all"
+              >
+                <h3 className="text-lg font-medium">
+                  <a
+                    href={publication.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:underline"
+                  >
+                    {publication.title}
+                  </a>
+                </h3>
+                <p className="text-gray-400 mt-2">
+                  {publication.venue} • {publication.year}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section className="space-y-6 mb-10">
           <h2 className="text-2xl font-semibold mb-6">Research</h2>
           <div 
@@ -188,17 +240,6 @@ export default function ResumePage() {
                 <ul className="list-disc ml-5 text-gray-300 mt-4 space-y-2">
                   <li>
                     Researched neuromorphic computing architectures and Spiking Neural Networks on chip.
-                  </li>
-                  <li>
-                    Publication:{" "}
-                    <a
-                      href="https://pubs.aip.org/aip/apl/article/118/11/112401/1022438/Domain-wall-magnetic-tunnel-junction-spin-orbit"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
-                    >
-                      Domain-wall magnetic tunnel junction spin-orbit torque oscillator
-                    </a>
                   </li>
                 </ul>
               </div>
