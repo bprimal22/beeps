@@ -1,12 +1,37 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useRef, useState, useCallback, useMemo, useSyncExternalStore } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import StarsBackground from "../components/stars-background";
 import { useConversation } from "@elevenlabs/react";
 import { PhoneCall, PhoneOff, Loader2 } from "lucide-react";
+
+function seededRandom(seed: number) {
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+function subscribeToViewport(callback: () => void) {
+  window.addEventListener("resize", callback);
+  return () => window.removeEventListener("resize", callback);
+}
+
+function getViewportSnapshot() {
+  return window.innerWidth < 768;
+}
+
+function subscribeToReducedMotion(callback: () => void) {
+  const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const listener = () => callback();
+  mediaQuery.addEventListener("change", listener);
+  return () => mediaQuery.removeEventListener("change", listener);
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
 function CosmicVisualization({ amplitude = 0, mobile = false }) {
   const particlesRef = useRef<THREE.Points>(null);
@@ -41,10 +66,17 @@ function CosmicVisualization({ amplitude = 0, mobile = false }) {
     const tmpColor = new THREE.Color();
 
     for (let i = 0; i < maxCount; i++) {
+      const radiusNoise = seededRandom(i * 3 + 1);
+      const thetaNoise = seededRandom(i * 3 + 2);
+      const phiNoise = seededRandom(i * 3 + 3);
+      const hueNoise = seededRandom(i * 3 + 4);
+      const satNoise = seededRandom(i * 3 + 5);
+      const lightNoise = seededRandom(i * 3 + 6);
+
       // Spiral-ish distribution for a denser core, looks cooler
-      const r = 220 + Math.random() * 320;
-      const t = Math.random() * Math.PI * 2;
-      const p = Math.acos(Math.random() * 2 - 1);
+      const r = 220 + radiusNoise * 320;
+      const t = thetaNoise * Math.PI * 2;
+      const p = Math.acos(phiNoise * 2 - 1);
 
       const x = r * Math.sin(p) * Math.cos(t);
       const y = r * Math.sin(p) * Math.sin(t);
@@ -60,9 +92,9 @@ function CosmicVisualization({ amplitude = 0, mobile = false }) {
 
       // Varied colors; keep static per-vertex for perf
       tmpColor.setHSL(
-        0.52 + Math.random() * 0.25,
-        0.6 + Math.random() * 0.35,
-        0.5 + Math.random() * 0.4
+        0.52 + hueNoise * 0.25,
+        0.6 + satNoise * 0.35,
+        0.5 + lightNoise * 0.4
       );
       col[i * 3] = tmpColor.r;
       col[i * 3 + 1] = tmpColor.g;
@@ -148,8 +180,8 @@ function CosmicVisualization({ amplitude = 0, mobile = false }) {
     <group>
       <points ref={particlesRef}>
         <bufferGeometry ref={geomRef}>
-          <bufferAttribute attach="attributes-position" count={maxCount} array={positions} itemSize={3} />
-          <bufferAttribute attach="attributes-color" count={maxCount} array={colors} itemSize={3} />
+          <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+          <bufferAttribute attach="attributes-color" args={[colors, 3]} />
         </bufferGeometry>
         <pointsMaterial
           ref={materialRef}
@@ -188,15 +220,17 @@ function CosmicVisualization({ amplitude = 0, mobile = false }) {
 type ExactUint8Array = Uint8Array<ArrayBuffer>;
 
 export default function AvatarPage() {
-  const [mounted, setMounted] = useState(false);
   const [amplitude, setAmplitude] = useState(0);
   const [responseText, setResponseText] = useState("");
   const analyserRef = useRef<AnalyserNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
   const [isConnecting, setIsConnecting] = useState(false);
+  const isMobile = useSyncExternalStore(subscribeToViewport, getViewportSnapshot, () => false);
+  const reducedMotion = useSyncExternalStore(
+    subscribeToReducedMotion,
+    getReducedMotionSnapshot,
+    () => false
+  );
 
   const conversation = useConversation({
     onConnect: () => {
@@ -220,17 +254,6 @@ export default function AvatarPage() {
   });
 
   useEffect(() => {
-    setMounted(true);
-    // Env hints for perf/responsiveness
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mql.matches);
-    const onRMChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    mql.addEventListener?.("change", onRMChange);
-
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
     async function setupAudio() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -263,10 +286,6 @@ export default function AvatarPage() {
       }
     }
     setupAudio();
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-      mql.removeEventListener?.("change", onRMChange);
-    };
   }, []);
 
   const startConversation = useCallback(async () => {
@@ -290,9 +309,7 @@ export default function AvatarPage() {
     await conversation.endSession();
   }, [conversation]);
 
-  return !mounted ? (
-    <div />
-  ) : (
+  return (
     <div className="h-screen w-full bg-black relative">
       <StarsBackground />
       <div className="absolute inset-0">

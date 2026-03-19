@@ -8,7 +8,7 @@ export default function Page() {
       <StarsBackground />
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-12">
         <h1 className="mb-3 text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter">BP RIMAL</h1>
-        <p className="mb-10 text-gray-400 text-lg sm:text-xl">Building cool shits with AI</p>
+        <p className="mb-10 text-gray-400 text-lg sm:text-xl">building AI products to impact a billion lives</p>
 
         <div className="grid w-full max-w-4xl grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
           {/* AI BP */}
