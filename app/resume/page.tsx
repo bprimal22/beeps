@@ -87,16 +87,16 @@ export default function ResumePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               {
+                title: "blackboardLM.com",
+                link: "https://blackboardlm.com",
+                description: "Personalized Khan Academy-style videos you can pause, question, and steer in real time.",
+                tech: ["Python", "TypeScript"]
+              },
+              {
                 title: "GenUX.site",
                 link: "https://www.genux.site",
                 description: "Enabled LLM Agents to generate UI in real time to interact with users.",
                 tech: ["Python", "TypeScript", "Svelte"]
-              },
-              {
-                title: "decall.live",
-                link: "http://decall.live",
-                description: "Low-latency AI Phone Receptionist for Auto Dealerships",
-                tech: ["Python", "TypeScript", "Kubernetes"]
               },
               {
                 title: "Drug-Drug Interaction Classification",
