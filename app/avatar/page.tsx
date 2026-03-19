@@ -224,6 +224,10 @@ export default function AvatarPage() {
   const [responseText, setResponseText] = useState("");
   const analyserRef = useRef<AnalyserNode | null>(null);
   const dataArrayRef = useRef<Uint8Array | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const micStreamRef = useRef<MediaStream | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const isMobile = useSyncExternalStore(subscribeToViewport, getViewportSnapshot, () => false);
   const reducedMotion = useSyncExternalStore(
@@ -231,6 +235,74 @@ export default function AvatarPage() {
     getReducedMotionSnapshot,
     () => false
   );
+
+  const stopMicrophone = useCallback(() => {
+    if (animationFrameRef.current !== null) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+
+    audioSourceRef.current?.disconnect();
+    audioSourceRef.current = null;
+    analyserRef.current = null;
+    dataArrayRef.current = null;
+
+    micStreamRef.current?.getTracks().forEach((track) => track.stop());
+    micStreamRef.current = null;
+
+    const audioContext = audioContextRef.current;
+    audioContextRef.current = null;
+
+    if (audioContext && audioContext.state !== "closed") {
+      void audioContext.close().catch((error) => {
+        console.error("Failed to close audio context:", error);
+      });
+    }
+
+    setAmplitude(0);
+  }, []);
+
+  const startMicrophone = useCallback(async () => {
+    if (micStreamRef.current) return;
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const AudioContextCtor: typeof AudioContext =
+        window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const audioContext = new AudioContextCtor();
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+
+      micStreamRef.current = stream;
+      audioContextRef.current = audioContext;
+      audioSourceRef.current = source;
+      analyserRef.current = analyser;
+      dataArrayRef.current = new Uint8Array(analyser.frequencyBinCount);
+
+      const updateAmplitude = () => {
+        if (!analyserRef.current || !dataArrayRef.current) return;
+
+        analyserRef.current.getByteFrequencyData(
+          dataArrayRef.current as unknown as ExactUint8Array
+        );
+
+        const avg =
+          dataArrayRef.current.reduce((acc, val) => acc + val, 0) /
+          dataArrayRef.current.length;
+
+        setAmplitude(avg / 255);
+        animationFrameRef.current = requestAnimationFrame(updateAmplitude);
+      };
+
+      updateAmplitude();
+    } catch (error) {
+      stopMicrophone();
+      throw error;
+    }
+  }, [stopMicrophone]);
 
   const conversation = useConversation({
     onConnect: () => {
@@ -240,6 +312,7 @@ export default function AvatarPage() {
     onDisconnect: () => {
       console.log("Disconnected");
       setIsConnecting(false);
+      stopMicrophone();
     },
     onMessage: (message: unknown) => {
       console.log("Message:", message);
@@ -250,50 +323,23 @@ export default function AvatarPage() {
       }
       setResponseText(text);
     },
-    onError: (error: unknown) => console.error("Error:", error),
+    onError: (error: unknown) => {
+      console.error("Error:", error);
+      setIsConnecting(false);
+      stopMicrophone();
+    },
   });
 
   useEffect(() => {
-    async function setupAudio() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const AudioContextCtor: typeof AudioContext =
-          window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-        const audioCtx = new AudioContextCtor();
-        const analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 256;
-        const source = audioCtx.createMediaStreamSource(stream);
-        source.connect(analyser);
-        analyserRef.current = analyser;
-        const bufferLength = analyser.frequencyBinCount;
-        dataArrayRef.current = new Uint8Array(bufferLength);
-
-        const updateAmplitude = () => {
-          if (analyserRef.current && dataArrayRef.current) {
-            analyserRef.current.getByteFrequencyData(
-              dataArrayRef.current as unknown as ExactUint8Array
-            );
-            const avg =
-              dataArrayRef.current.reduce((acc, val) => acc + val, 0) /
-              dataArrayRef.current.length;
-            setAmplitude(avg / 255);
-          }
-          requestAnimationFrame(updateAmplitude);
-        };
-        updateAmplitude();
-      } catch (err) {
-        console.error("Audio input not available", err);
-      }
-    }
-    setupAudio();
-  }, []);
+    return () => {
+      stopMicrophone();
+    };
+  }, [stopMicrophone]);
 
   const startConversation = useCallback(async () => {
     try {
-      // Microphone permission is already requested in useEffect,
-      // but we include it here to ensure compatibility with the hook
       setIsConnecting(true);
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      await startMicrophone();
       await conversation.startSession({
         agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || "YOUR_PUBLIC_AGENT_ID",
         connectionType: "webrtc",
@@ -301,13 +347,18 @@ export default function AvatarPage() {
     } catch (error) {
       console.error("Failed to start conversation:", error);
       setIsConnecting(false);
+      stopMicrophone();
     }
-  }, [conversation]);
+  }, [conversation, startMicrophone, stopMicrophone]);
 
   const stopConversation = useCallback(async () => {
     setIsConnecting(false);
-    await conversation.endSession();
-  }, [conversation]);
+    try {
+      await conversation.endSession();
+    } finally {
+      stopMicrophone();
+    }
+  }, [conversation, stopMicrophone]);
 
   return (
     <div className="h-screen w-full bg-black relative">
