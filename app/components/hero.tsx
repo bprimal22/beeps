@@ -5,6 +5,41 @@ import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 
+type Particle = {
+  x: number
+  y: number
+  size: number
+  speedX: number
+  speedY: number
+}
+
+function createParticle(width: number, height: number): Particle {
+  return {
+    x: Math.random() * width,
+    y: Math.random() * height,
+    size: Math.random() * 2 + 0.1,
+    speedX: Math.random() * 2 - 1,
+    speedY: Math.random() * 2 - 1,
+  }
+}
+
+function updateParticle(particle: Particle, width: number, height: number) {
+  particle.x += particle.speedX
+  particle.y += particle.speedY
+
+  if (particle.x > width) particle.x = 0
+  if (particle.x < 0) particle.x = width
+  if (particle.y > height) particle.y = 0
+  if (particle.y < 0) particle.y = height
+}
+
+function drawParticle(ctx: CanvasRenderingContext2D, particle: Particle) {
+  ctx.fillStyle = "rgba(255, 255, 255, 0.5)"
+  ctx.beginPath()
+  ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
+  ctx.fill()
+}
+
 type Command = {
   command: string
   description: string
@@ -94,42 +129,8 @@ export default function Hero() {
     const particles: Particle[] = []
     const particleCount = 100
 
-    class Particle {
-      x: number
-      y: number
-      size: number
-      speedX: number
-      speedY: number
-
-      constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
-        this.size = Math.random() * 2 + 0.1
-        this.speedX = Math.random() * 2 - 1
-        this.speedY = Math.random() * 2 - 1
-      }
-
-      update() {
-        this.x += this.speedX
-        this.y += this.speedY
-
-        if (this.x > canvas.width) this.x = 0
-        if (this.x < 0) this.x = canvas.width
-        if (this.y > canvas.height) this.y = 0
-        if (this.y < 0) this.y = canvas.height
-      }
-
-      draw() {
-        if (!ctx) return
-        ctx.fillStyle = "rgba(255, 255, 255, 0.5)"
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-        ctx.fill()
-      }
-    }
-
     for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle())
+      particles.push(createParticle(canvas.width, canvas.height))
     }
 
     function animate() {
@@ -137,8 +138,8 @@ export default function Hero() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       for (const particle of particles) {
-        particle.update()
-        particle.draw()
+        updateParticle(particle, canvas.width, canvas.height)
+        drawParticle(ctx, particle)
       }
 
       requestAnimationFrame(animate)
@@ -194,7 +195,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Building cool shits with AI
+          building AI products to impact a billion lives
         </motion.p>
         <motion.div
           className="w-full max-w-3xl bg-black bg-opacity-75 p-6 rounded-lg border border-gray-700 backdrop-blur-sm"
@@ -228,4 +229,3 @@ export default function Hero() {
     </div>
   )
 }
-
