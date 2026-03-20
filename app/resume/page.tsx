@@ -252,12 +252,13 @@ export default function ResumePage() {
           {[
             {
               id: 'visa',
-              title: "Software Engineer",
+              title: "AI Engineer",
               company: "Visa",
               period: "June 2023 - Present",
               points: [
-                "Developed an AI tool that utilizes historical production issues to recommend solutions for new ones, cutting initial investigation time from 4 hours to just 20 minutes",
-                "Developed and maintained B2B payment platform APIs processing over $1.5B annually"              
+                "Created and scaled an AI-native API Playground, evolving from a side project into a company-wide platform currently being rolled out across Visa Developer Platform.",
+                "Built an AI remediation assistant that learns from past production issues, reducing average production incident lifespan from 27 to 6 days.",
+                "Designed and maintained APIs for Visa's B2B payment platform processing billions in transactions.",
               ]
             },
             {

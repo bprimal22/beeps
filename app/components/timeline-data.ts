@@ -103,7 +103,7 @@ export const milestones: Milestone[] = [
   {
     period: "2023-2026",
     category: "Industry",
-    title: "AI Engineer",
+    title: "AI Engineering",
     role: "Software Engineer",
     org: "Visa",
     summary: "Built core B2B payment APIs and AI-native internal tools at Visa.",
