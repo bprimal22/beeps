@@ -72,6 +72,15 @@ export default function Hero() {
       showInHelp: true
     },
     {
+      command: "timeline",
+      description: "see BP's big milestones",
+      action: () => {
+        router.push("/timeline")
+        return "Navigating to timeline page..."
+      },
+      showInHelp: true
+    },
+    {
       command: "writings",
       description: "check out BP's writings",
       action: () => {

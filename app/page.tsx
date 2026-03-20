@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
+import { History } from "lucide-react"
 import StarsBackground from "./components/stars-background"
 
 export default function Page() {
@@ -10,7 +11,7 @@ export default function Page() {
         <h1 className="mb-3 text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter">BP RIMAL</h1>
         <p className="mb-10 text-gray-400 text-lg sm:text-xl">building AI products to impact a billion lives</p>
 
-        <div className="grid w-full max-w-4xl grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
+        <div className="grid w-full max-w-5xl grid-cols-2 gap-4 sm:gap-6 md:grid-cols-5">
           {/* AI BP */}
           <Link
             href="/avatar"
@@ -67,6 +68,19 @@ export default function Page() {
             </div>
             <span className="text-base font-semibold tracking-wide text-white">Resume</span>
             <span className="mt-1 text-xs text-gray-400">work + projects</span>
+          </Link>
+
+          {/* Timeline */}
+          <Link
+            href="/timeline"
+            className="group flex flex-col items-center justify-center rounded-3xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur \
+            transition-all hover:-translate-y-1 hover:border-cyan-400/50 hover:bg-white/10 shadow-xl"
+          >
+            <div className="mb-4 flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl bg-black/40 ring-1 ring-white/10 shadow-lg transition-transform group-hover:scale-105">
+              <History className="h-12 w-12 text-cyan-200" strokeWidth={1.6} />
+            </div>
+            <span className="text-base font-semibold tracking-wide text-white">Timeline</span>
+            <span className="mt-1 text-xs text-gray-400">big milestones</span>
           </Link>
 
           {/* Writings */}
